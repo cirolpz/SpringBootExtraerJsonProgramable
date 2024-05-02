@@ -17,12 +17,14 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class Dispo_alquiler_diariaService {
     private static final Logger logger = LoggerFactory.getLogger(Dispo_alquiler_diariaService.class);
     private final Dispo_alquiler_diariaRepository repository;
-
+    private final AtomicInteger executionCount = new AtomicInteger(0); //borrar para el otro metodo
+    private static final int MAX_EXECUTIONS = 3;
     @Autowired
     public Dispo_alquiler_diariaService(Dispo_alquiler_diariaRepository repository) {
         this.repository = repository;
@@ -33,16 +35,22 @@ public class Dispo_alquiler_diariaService {
     }
 
     // Método programado para cargar el JSON tres veces al día
-    @Scheduled(cron = "0 * * * * ?") // Programación para 9, 12 y 15 horas
-  //  @Scheduled(cron = "0 0 9,12,15 * * ?") // Programación para 9, 12 y 15 horas
+    @Scheduled(cron = "0 * * * * ?")
+  //  @Scheduled(cron = "0 0 9,10,11 * * ?") // Programación para 9, 12 y 15 horas
 
     public void cargarJsonSiNoCargado() {
+        int currentCount = executionCount.incrementAndGet(); // Incrementa el contador
+
+        if (currentCount <= MAX_EXECUTIONS) {
         System.out.println("Verificando si el JSON se cargó hoy...");
         if (!jsonYaCargadoHoy()) {
             System.out.println("Cargando JSON ahora...");
             cargarJson();
         } else {
             System.out.println("El JSON ya se cargó hoy.");
+        }   }
+        else {
+            logger.info("Se ha alcanzado el máximo número de ejecuciones.");
         }
     }
     private boolean jsonYaCargadoHoy() {
@@ -118,7 +126,6 @@ public class Dispo_alquiler_diariaService {
                 dispo.setFechaDispo(jsonObject.containsKey("Fecha_dispo")
                         ? new java.sql.Date(((Date) jsonObject.get("Fecha_dispo")).getTime())
                         : null);
-
                 dataList.add(dispo);
             }
 

@@ -12,7 +12,6 @@ import java.util.List;
 public class Dispo_alquiler_diariaController {
     private final Dispo_alquiler_diariaService dispoAlquilerDiariaService;
     @Autowired
-
     public Dispo_alquiler_diariaController(Dispo_alquiler_diariaService dispoAlquilerDiariaService){
         this.dispoAlquilerDiariaService=dispoAlquilerDiariaService;
     }
@@ -21,6 +20,4 @@ public class Dispo_alquiler_diariaController {
     public List<Dispo_alquiler_diaria> getAllBooks(){
         return dispoAlquilerDiariaService.getAllDispo_alquiler_diaria();
     }
-
-
 }
