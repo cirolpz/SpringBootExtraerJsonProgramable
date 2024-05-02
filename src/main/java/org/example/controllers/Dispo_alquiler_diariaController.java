@@ -15,7 +15,6 @@ public class Dispo_alquiler_diariaController {
     public Dispo_alquiler_diariaController(Dispo_alquiler_diariaService dispoAlquilerDiariaService){
         this.dispoAlquilerDiariaService=dispoAlquilerDiariaService;
     }
-
     @GetMapping("/dispoAlquilerDiaria")
     public List<Dispo_alquiler_diaria> getAllBooks(){
         return dispoAlquilerDiariaService.getAllDispo_alquiler_diaria();
